@@ -97,8 +97,17 @@ module RedmineCkeditor
       skin = RedmineCkeditorSetting.skin
       skin += ",#{assets_root}/ckeditor-contrib/skins/#{skin}/" if skin != "moono-lisa"
 
+      redmine_application_css =
+        if Redmine::VERSION::MAJOR >= 6
+          File.join(Rails.root, 'public', 'asset', 'application*.css')
+          files = Dir.glob(File.join(Rails.root, 'public', 'assets', 'application*.css'))
+          files.first ? ActionController::Base.helpers.asset_path(files.first.split('/').last) : ''
+        else
+          stylesheet_path("application")
+        end
+
       rich_options = Rich.options({
-        :contentsCss => [stylesheet_path("application"), "#{assets_root}/stylesheets/editor.css"],
+        :contentsCss => [redmine_application_css, "#{assets_root}/stylesheets/editor.css"],
         :scoped => scope_object ? true : false,
         :allow_document_uploads => true,
         :allow_embeds => true,
@@ -132,22 +141,46 @@ module RedmineCkeditor
       ::JournalsController.prepend JournalsControllerPatch
       ::MailHandler.prepend MailHandlerPatch
       ::MessagesController.prepend MessagesControllerPatch
-      ::QueriesController.send :helper, QueriesHelperPatch
+      #::QueriesController.send :helper, QueriesHelperPatch
       ::Rich::FilesController.send :helper, RichFilesHelperPatch
+
+      unless ::Issue.included_modules.include?(IssuePatch)
+        ::Issue.send(:include, IssuePatch)
+      end
+      unless ::Journal.included_modules.include?(JournalPatch)
+        ::Journal.send(:include, JournalPatch)
+      end
+      unless ::QueriesHelper.included_modules.include?(QueriesHelperPatch)
+        ::QueriesHelper.send(:include, QueriesHelperPatch)
+      end
+    end
+
+    def copy_assets_to_public_in_R6XX
+      return if Redmine::VERSION::MAJOR < 6
+
+      unless File.exist?(File.join(Rails.root, 'public', 'plugin_assets', 'redmine_ckeditor'))
+        Dir.mkdir(File.join(Rails.root, 'public', 'plugin_assets', 'redmine_ckeditor'))
+      end
+
+      FileUtils.cp_r(
+        Dir.glob(File.join(Rails.root, 'plugins', 'redmine_ckeditor', 'assets', '*')),
+        File.join(Rails.root, 'public', 'plugin_assets', 'redmine_ckeditor')
+      )
     end
   end
 end
 
-plugin_name = :redmine_ckeditor
-plugin_root = File.dirname(__FILE__)
-
-require plugin_root + '/redmine_ckeditor/helper'
-require plugin_root + '/redmine_ckeditor/application_helper_patch'
-require plugin_root + '/redmine_ckeditor/queries_helper_patch'
-require plugin_root + '/redmine_ckeditor/rich_files_helper_patch'
-require plugin_root + '/redmine_ckeditor/journals_controller_patch'
-require plugin_root + '/redmine_ckeditor/messages_controller_patch'
-require plugin_root + '/redmine_ckeditor/mail_handler_patch'
-require plugin_root + '/redmine_ckeditor/pdf_patch'
-require plugin_root + '/redmine_ckeditor/tempfile_patch'
-require plugin_root + '/redmine_ckeditor/csv_export_patch'
+base_path = File.dirname(__FILE__)
+#require "#{base_path}/redmine_ckeditor/helper"
+require "#{base_path}/redmine_ckeditor/after_plugins_loaded_hook"
+require "#{base_path}/redmine_ckeditor/application_helper_patch"
+require "#{base_path}/redmine_ckeditor/issue_patch"
+require "#{base_path}/redmine_ckeditor/journal_patch"
+require "#{base_path}/redmine_ckeditor/queries_helper_patch"
+require "#{base_path}/redmine_ckeditor/rich_files_helper_patch"
+require "#{base_path}/redmine_ckeditor/journals_controller_patch"
+require "#{base_path}/redmine_ckeditor/messages_controller_patch"
+require "#{base_path}/redmine_ckeditor/mail_handler_patch"
+require "#{base_path}/redmine_ckeditor/pdf_patch"
+require "#{base_path}/redmine_ckeditor/settings_controller_patch"
+require "#{base_path}/redmine_ckeditor/tempfile_patch"

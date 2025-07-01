@@ -1,14 +1,16 @@
 module RedmineCkeditor::WikiFormatting
   module Helper
-    include RedmineCkeditor::Helper
+    #include RedmineCkeditorHelper
 
     def replace_editor_script(field_id, preview_url)
       <<-EOT
         (function() {
           var textarea = document.getElementById('#{field_id}');
           if (!textarea) return;
-          new jsToolBar(textarea).setPreviewUrl('#{preview_url}');
+          window.jsToolBarFor_#{field_id} = new jsToolBar(textarea);
+          window.jsToolBarFor_#{field_id}.setPreviewUrl('#{preview_url}');
           CKEDITOR.replace(textarea, #{RedmineCkeditor.options(@project).to_json});
+          setTimeout(() => window.jsToolBarFor_#{field_id}.draw(), 10);
         })();
       EOT
     end

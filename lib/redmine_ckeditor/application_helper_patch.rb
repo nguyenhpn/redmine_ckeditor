@@ -1,6 +1,6 @@
 module RedmineCkeditor
   module ApplicationHelperPatch
-    include RedmineCkeditor::Helper
+    include RedmineCkeditorHelper
 
     def format_activity_description(text)
       if RedmineCkeditor.enabled?
