@@ -1,69 +1,79 @@
 <%= ckeditor_javascripts %>
 <%= stylesheet_link_tag 'editor', :plugin => 'redmine_ckeditor'%>
 <%= stylesheet_link_tag 'selector', :plugin => 'redmine_ckeditor'%>
-<p>
-  <%= content_tag :label, l(:ckeditor_skin) %>
-  <%= select_tag "settings[skin]", RedmineCkeditor.skin_options %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_ui_color) %>
-  <%= text_field_tag "settings[ui_color]", RedmineCkeditorSetting.ui_color %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_width) %>
-  <%= text_field_tag "settings[width]", RedmineCkeditorSetting.width %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_height) %>
-  <%= text_field_tag "settings[height]", RedmineCkeditorSetting.height %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_enter_mode) %>
-  <%= select_tag "settings[enter_mode]", RedmineCkeditor.enter_mode_options %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_startup_show_blocks) %>
-  <%= hidden_field_tag "settings[show_blocks]", 0 %>
-  <%= check_box_tag "settings[show_blocks]", 1, RedmineCkeditorSetting.show_blocks %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_toolbar_can_collapse) %>
-  <%= hidden_field_tag "settings[toolbar_can_collapse]", 0 %>
-  <%= check_box_tag "settings[toolbar_can_collapse]", 1, RedmineCkeditorSetting.toolbar_can_collapse %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_toolbar_location) %>
-  <%= select_tag "settings[toolbar_location]", RedmineCkeditor.toolbar_location_options %>
-</p>
-<p>
-  <%= content_tag :label, l(:ckeditor_toolbar_buttons) %>
-</p>
 
-<div class="selector-container">
-  <%= hidden_field_tag "settings[toolbar]", RedmineCkeditorSetting.toolbar_string %>
+<fieldset class="box tabular">
+  <legend><%= l(:ck_general_settings) %></legend>
+  <p>
+    <%= content_tag :label, l(:ckeditor_skin) %>
+    <%= select_tag "settings[skin]", RedmineCkeditor.skin_options %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_ui_color) %>
+    <%= text_field_tag "settings[ui_color]", RedmineCkeditorSetting.ui_color %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_width) %>
+    <%= text_field_tag "settings[width]", RedmineCkeditorSetting.width %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_height) %>
+    <%= text_field_tag "settings[height]", RedmineCkeditorSetting.height %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_enter_mode) %>
+    <%= select_tag "settings[enter_mode]", RedmineCkeditor.enter_mode_options %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_startup_show_blocks) %>
+    <%= hidden_field_tag "settings[show_blocks]", 0 %>
+    <%= check_box_tag "settings[show_blocks]", 1, RedmineCkeditorSetting.show_blocks %>
+  </p>
+</fieldset>
 
-  <select id="left" multiple="multiple" size="10">
-  </select>
+<fieldset class="box tabular">
+  <legend><%= l(:ck_toolbar_settings) %></legend>
+  <p>
+    <%= content_tag :label, l(:ckeditor_toolbar_can_collapse) %>
+    <%= hidden_field_tag "settings[toolbar_can_collapse]", 0 %>
+    <%= check_box_tag "settings[toolbar_can_collapse]", 1, RedmineCkeditorSetting.toolbar_can_collapse %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_toolbar_location) %>
+    <%= select_tag "settings[toolbar_location]", RedmineCkeditor.toolbar_location_options %>
+  </p>
+  <p>
+    <%= content_tag :label, l(:ckeditor_toolbar_buttons) %>
+  </p>
 
-  <div class="container">
-    <input type="button" class="button" value="<%= t(:add) %> >>"
-      onclick="moveItem('left', 'right')"/><br/>
-    <input type="button" class="button" value="<%= t(:remove) %> <<"
-      onclick="moveItem('right', 'left')"/><br/><br/>
-    <input type="button" class="button" value="<%= t(:separator) %> >>"
-      onclick="addItem('-')"/><br/>
-    <input type="button" class="button" value="<%= t(:subgroup) %> >>"
-      onclick="addItem('--')"/><br/>
-    <input type="button" class="button" value="<%= t(:line_break) %> >>"
-      onclick="addItem('/')"/>
+  <div class="selector-container">
+    <%= hidden_field_tag "settings[toolbar]", RedmineCkeditorSetting.toolbar_string %>
+
+    <select id="left" multiple="multiple" size="10">
+    </select>
+
+    <div class="container">
+      <input type="button" class="button" value="<%= t(:add) %> >>"
+        onclick="moveItem('left', 'right')"/><br/>
+      <input type="button" class="button" value="<%= t(:remove) %> <<"
+        onclick="moveItem('right', 'left')"/><br/><br/>
+      <input type="button" class="button" value="<%= t(:separator) %> >>"
+        onclick="addItem('-')"/><br/>
+      <input type="button" class="button" value="<%= t(:subgroup) %> >>"
+        onclick="addItem('--')"/><br/>
+      <input type="button" class="button" value="<%= t(:line_break) %> >>"
+        onclick="addItem('/')"/>
+    </div>
+
+    <select id="right" multiple="multiple" size="10">
+    </select>
+
+    <div class="clear"></div>
+    <div id="toolbar"></div>
   </div>
+</fieldset>
 
-  <select id="right" multiple="multiple" size="10">
-  </select>
-
-  <div class="clear"></div>
-  <div id="toolbar"></div>
-</div>
+<%= render partial: 'ck_mentions' %>
 
 <%= javascript_tag do %>
   function moveItem(from, to) {
@@ -72,7 +82,7 @@
     var selected = to.find("option:selected").first();
     from.find("option:selected").remove().each(function() {
       if (this.value == '-' || this.value == '--' || this.value == '/') return;
-      selected.size() ? selected.before(this) : to.append(this);
+      selected.length ? selected.before(this) : to.append(this);
     });
     to.prop("selectedIndex", -1);
     changeHandler();
@@ -82,7 +92,7 @@
     var option = $("<option/>").val(item).text(item);
     var to = $("#right");
     var selected = to.find("option:selected").first();
-    selected.size() ? selected.before(option) : to.append(option);
+    selected.length ? selected.before(option) : to.append(option);
     changeHandler();
   }
 
@@ -109,6 +119,8 @@
     if (bar.length > 0) bars.push(bar);
 
     CKEDITOR.instances['toolbar'].destroy();
+    CKEDITOR.instances['settings_user_mentions_notification_msg'].destroy();
+    CKEDITOR.instances['settings_issue_mentions_notification_msg'].destroy();
     updateCkeditor(bars);
   }
 
@@ -116,6 +128,8 @@
     var options = <%= RedmineCkeditor.options.to_json.html_safe %>;
     options.toolbar = toolbar;
     CKEDITOR.replace('toolbar', options);
+    CKEDITOR.replace('settings_user_mentions_notification_msg', options);
+    CKEDITOR.replace('settings_issue_mentions_notification_msg', options);
   }
 
   CKEDITOR.on('instanceReady', function() {

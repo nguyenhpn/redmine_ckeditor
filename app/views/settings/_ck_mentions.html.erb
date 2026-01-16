@@ -1,0 +1,330 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag 'ckeditor_mentions.js', plugin: :redmine_ckeditor %>
+<% end %>
+
+<fieldset class="box tabular">
+  <legend><%= l(:ck_mentions_settings) %></legend>
+
+  <%#
+    **************************
+    * User mentions settings *
+    **************************
+  %>
+  <div class="user_mentions_block">
+
+    <%# Enable/disable user mentions (and show/hide div.user_mentions_options_box) %>
+    <p>
+      <%= content_tag :label, l(:ck_user_mentions) %>
+      <%=
+        check_box_tag(
+          "settings[user_mentions]",
+          1,
+          RedmineCkeditorSetting.user_mentions,
+          onclick: 'clickUserMentions()'
+        )
+      %>
+    </p>
+
+    <div class="ck_mentions_settings user_mentions_options_box">
+
+      <%# Trigger char for user mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_triggered_by) %>
+        <%=
+          select_tag(
+            "settings[user_mentions_triggered_by]",
+            RedmineCkeditorSetting.user_mentions_triggered_by_options
+          )
+        %>
+      </p>
+
+      <%# Min number of chars to trigger for user mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_min_chars) %>
+        <%=
+          number_field_tag(
+            "settings[user_mentions_min_chars]",
+            RedmineCkeditorSetting.user_mentions_min_chars,
+            min: 0,
+            max: 5,
+            step: 1
+          )
+        %>
+      </p>
+
+      <%# Max number of results for user mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_max_results) %>
+        <%=
+          number_field_tag(
+            "settings[user_mentions_max_results]",
+            RedmineCkeditorSetting.user_mentions_max_results,
+            min: 1,
+            max: 30,
+            step: 1
+          )
+        %>
+      </p>
+
+      <%# Action for user mentions (when user clicks the mention) %>
+      <p>
+        <%= content_tag :label, l(:ck_mention_action) %>
+        <%=
+          select_tag(
+            "settings[user_mentions_action]",
+            RedmineCkeditorSetting.user_mentions_action_options
+          )
+        %>
+      </p>
+
+      <%# Format of user mentions (visible for user) %>
+      <p>
+        <%= content_tag :label, l(:ck_mention_format) %>
+        <%=
+          select_tag(
+            "settings[user_mentions_format]",
+            RedmineCkeditorSetting.user_mentions_format_options
+          )
+        %>
+      </p>
+
+      <%# Use avatars for suggestions %>
+      <p>
+        <%= content_tag :label, l(:ck_mentions_avatars) %>
+        <%=
+          check_box_tag(
+            "settings[user_mentions_avatars]",
+            1,
+            RedmineCkeditorSetting.user_mentions_avatars
+          )
+        %>
+      </p>
+
+      <%# Limit mentions suggestions only to current project %>
+      <p>
+        <%= content_tag :label, l(:ck_mentions_project_only) %>
+        <%=
+          check_box_tag(
+            "settings[user_mentions_project_only]",
+            1,
+            RedmineCkeditorSetting.user_mentions_project_only
+          )
+        %>
+      </p>
+
+      <%#
+        Enable/disable sending of user mention notifications (and show/hide notification options
+        below)
+      %>
+      <p>
+        <%= content_tag :label, l(:ck_send_notification_to_user) %>
+        <%=
+          check_box_tag(
+            "settings[user_mentions_notifications]",
+            1,
+            RedmineCkeditorSetting.user_mentions_notifications,
+            onclick: 'clickUserMentionsNotifications()'
+          )
+        %>
+      </p>
+
+      <div class="ck_mentions_settings user_notifications_box">
+
+        <%# Notify on type %>
+        <p>
+          <%= content_tag :label, l(:ck_notify_on) %>
+          <%=
+            select_tag(
+              "settings[user_mentions_notify_on]",
+              RedmineCkeditorSetting.user_mentions_notify_on_options
+            )
+          %>
+        </p>
+
+        <%# css style to highlight notification links in the notification context %>
+        <p>
+          <%= content_tag :label, l(:ck_highlight_notification_style) %>
+          <%=
+            text_field_tag(
+              "settings[user_mentions_notification_style]",
+              RedmineCkeditorSetting.user_mentions_notification_style
+            )
+          %>
+        </p>
+
+        <%# Mail notification subject %>
+        <p>
+          <%= content_tag :label, l(:ck_notification_subject) %>
+          <%=
+            text_field_tag(
+              "settings[user_mentions_notification_subject]",
+              RedmineCkeditorSetting.user_mentions_notification_subject
+            )
+          %>
+        </p>
+
+        <%# Mail notification message %>
+        <p>
+          <%= content_tag :label, l(:ck_notification_msg) %>
+          <%=
+              text_area_tag(
+              "settings[user_mentions_notification_msg]",
+              RedmineCkeditorSetting.user_mentions_notification_msg
+            )
+          %>
+        </p>
+
+        <%# Avalilable placeholders message %>
+        <p><%= raw(l(:ck_notification_user_placeholders)) %></p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <%#
+    ***************************
+    * Issue mentions settings *
+    ***************************
+  %>
+  <div class="issue_mentions_box">
+
+    <%# Enable/disable issue mentions (and show/hide div.issue_mentions_options_box) %>
+    <p>
+      <%= content_tag :label, l(:ck_issue_mentions) %>
+      <%=
+        check_box_tag(
+          "settings[issue_mentions]",
+          1,
+          RedmineCkeditorSetting.issue_mentions,
+          onclick: 'clickIssueMentions()'
+        )
+      %>
+    </p>
+
+    <div class="ck_mentions_settings issue_mentions_options_box">
+
+      <%# Trigger char for issue mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_triggered_by) %>
+        <%=
+          select_tag(
+            "settings[issue_mentions_triggered_by]",
+            RedmineCkeditorSetting.issue_mentions_triggered_by_options
+          )
+        %>
+      </p>
+
+      <%# Min number of chars to trigger for issue mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_min_chars) %>
+        <%=
+          number_field_tag(
+            "settings[issue_mentions_min_chars]",
+            RedmineCkeditorSetting.issue_mentions_min_chars,
+            min: 0,
+            max: 5,
+            step: 1
+          )
+        %>
+      </p>
+
+      <%# Max number of results for issue mentions %>
+      <p>
+        <%= content_tag :label, l(:ck_max_results) %>
+        <%=
+          number_field_tag(
+            "settings[issue_mentions_max_results]",
+            RedmineCkeditorSetting.issue_mentions_max_results,
+            min: 1,
+            max: 30,
+            step: 1
+          )
+        %>
+      </p>
+
+      <%# Format of issue mentions (visible for user) %>
+      <p>
+        <%= content_tag :label, l(:ck_mention_format) %>
+        <%=
+          select_tag(
+            "settings[issue_mentions_format]",
+            RedmineCkeditorSetting.issue_mentions_format_options
+          )
+        %>
+      </p>
+
+      <%# Limit mentions suggestions only to current project %>
+      <p>
+        <%= content_tag :label, l(:ck_mentions_project_only) %>
+        <%=
+          check_box_tag(
+            "settings[issue_mentions_project_only]",
+            1,
+            RedmineCkeditorSetting.issue_mentions_project_only
+          )
+        %>
+      </p>
+
+      <%#
+        Enable/disable writing of issue mention notifications (and show/hide notification options
+        below)
+      %>
+      <p>
+        <%= content_tag :label, l(:ck_write_notification_to_journal) %>
+        <%=
+          check_box_tag(
+            "settings[issue_mentions_notifications]",
+            1,
+            RedmineCkeditorSetting.issue_mentions_notifications,
+            onclick: 'clickIssueMentionsNotifications()'
+          )
+        %>
+      </p>
+
+      <div class="ck_mentions_settings issue_notifications_box">
+
+        <%# Notify on type %>
+        <p>
+          <%= content_tag :label, l(:ck_notify_on) %>
+          <%=
+            select_tag(
+              "settings[issue_mentions_notify_on]",
+              RedmineCkeditorSetting.issue_mentions_notify_on_options
+            )
+          %>
+        </p>
+
+        <%# css style to highlight notification links in the notification context %>
+        <p>
+          <%= content_tag :label, l(:ck_highlight_notification_style) %>
+          <%=
+            text_field_tag(
+              "settings[issue_mentions_notification_style]",
+              RedmineCkeditorSetting.issue_mentions_notification_style
+            )
+          %>
+        </p>
+
+        <%# Journal notification message %>
+        <p>
+          <%= content_tag :label, l(:ck_notification_msg) %>
+          <%=
+            text_area_tag(
+              "settings[issue_mentions_notification_msg]",
+              RedmineCkeditorSetting.issue_mentions_notification_msg
+            )
+          %>
+        </p>
+
+        <%# Avalilable placeholders message %>
+        <p><%= raw(l(:ck_notification_issue_placeholders)) %></p>
+
+
+      </div>
+
+    </div>
+
+  </div>
+</fieldset>

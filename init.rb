@@ -1,29 +1,22 @@
 require 'redmine'
 
-plugin_name = :redmine_ckeditor
-plugin_root = File.dirname(__FILE__)
-
-unless defined?(SmileTools)
-    require plugin_root + '/lib/redmine_ckeditor'
+base_path = File.dirname(__FILE__)
+if Rails.configuration.respond_to?(:autoloader) && Rails.configuration.autoloader == :zeitwerk
+  Rails.autoloaders.each { |loader| loader.ignore("#{base_path}/lib") }
 end
+require "#{base_path}/lib/redmine_ckeditor"
 
-if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
-  Rails.application.config.after_initialize do
-    RedmineCkeditor.apply_patch
-  end
-else
-  Rails.configuration.to_prepare do
-    RedmineCkeditor.apply_patch
-  end
+ActiveSupport::Reloader.to_prepare do
+  RedmineCkeditor.apply_patch
 end
 
 Redmine::Plugin.register :redmine_ckeditor do
   name 'Redmine CKEditor plugin'
-  author 'Akihiro Ono'
+  author 'RedmineX'
   description 'This is a CKEditor plugin for Redmine'
-  version '1.2.4'
-  requires_redmine :version_or_higher => '5.0.0'
-  url 'https://github.com/nomadli/redmine_ckeditor'
+  version '1.2.7'
+  requires_redmine :version_or_higher => '4.0.0'
+  url 'https://www.redmine-x.com'
 
   settings(:partial => 'settings/ckeditor')
 
@@ -31,5 +24,7 @@ Redmine::Plugin.register :redmine_ckeditor do
     RedmineCkeditor::WikiFormatting::Helper
 end
 
+# Copy assets to the original public/plugin_assets folder (where assets where stored in R5XX)
+RedmineCkeditor.copy_assets_to_public_in_R6XX
+
 (Loofah::VERSION >= "2.3.0" ? Loofah::HTML5::SafeList : Loofah::HTML5::WhiteList)::ALLOWED_PROTOCOLS.replace RedmineCkeditor.allowed_protocols
-Loofah::HTML5::WhiteList::ALLOWED_PROTOCOLS.add('data')

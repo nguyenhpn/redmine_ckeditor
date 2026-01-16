@@ -446,3 +446,20 @@ table {
 
 td {
   vertical-align: top; }
+
+.mention-user-item {
+  display: flex;
+  align-items: center;
+}
+
+.mention-user-item .gravatar {
+  margin-right: 0.25rem;
+}
+
+li.mention-issue-item  {
+  display: flex;
+}
+  
+.mention-issue-item div:first-child {
+  margin-right: 0.25rem;
+}
