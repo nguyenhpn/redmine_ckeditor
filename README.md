@@ -1,3 +1,5 @@
+(from RedmineX)
+
 <h3>Fork of Redmine CK Editor plugin</h3>
 
 <h5>Source:</h5>
