@@ -73,7 +73,7 @@ CKEDITOR.editorConfig = function( config ) {
 		'toolbar',
 		'undo',
 		'uploadimage',
-		//'wsc',
+		// 'wsc',
 		'wysiwygarea',
 		'xml'
 	];
