@@ -18,8 +18,14 @@ Redmine::Plugin.register :redmine_ckeditor do
   requires_redmine :version_or_higher => '4.0.0'
   url 'http://github.com/a-ono/redmine_ckeditor'
 
-  # Maintainer: 'RedmineX - https://www.redmine-x.com'
-  # CKEditor Plugins: https://ckeditor.com/cke4/addons/plugins/all
+=begin
+  Maintainer: 'RedmineX - https://www.redmine-x.com'
+  
+  CKEditor 4
+    - Plugins: https://ckeditor.com/cke4/addons/plugins/all
+    - Guide: https://ckeditor.com/docs/ckeditor4/latest/guide/dev_howtos_dialog_windows.html
+    - API: https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_dialog.html
+=end
 
   settings(:partial => 'settings/ckeditor')
 
