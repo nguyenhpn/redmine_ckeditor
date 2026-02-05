@@ -1,0 +1,27 @@
+.cke_dialog a.cke_btn_locked,
+.cke_dialog a.cke_btn_unlocked {
+  scale: 1.5;
+}
+
+.cke_dialog a.cke_btn_reset {
+  scale: 1.5;
+}
+
+div.cke_dialog_ui_input_select {
+  display: unset;
+}
+
+.cke_dialog_ui_html {
+  margin-top: 4px;
+}
+
+.cke_dialog .preview_image_box {
+  max-height: 60vh;
+  max-width: 80vw;
+  min-height: 30vh;
+  min-width: 40vw;
+  border: 1px ridge #bcbcbc;
+  overflow: scroll;
+  margin-top: 2px;
+  padding: 2px;
+}
