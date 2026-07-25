@@ -2,8 +2,9 @@ module RedmineCkeditor::WikiFormatting
   class Formatter
     include Redmine::WikiFormatting::LinksHelper
 
-    def initialize(text)
+    def initialize(text, options = {})
       @text = text
+      @options = options
     end
 
     def to_html(&block)
